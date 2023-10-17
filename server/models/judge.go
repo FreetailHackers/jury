@@ -25,6 +25,8 @@ type Judge struct {
 	Beta         float64             `bson:"beta" json:"beta"`
 	SeenProjects []JudgedProject     `bson:"seen_projects" json:"seen_projects"`
 	LastActivity primitive.DateTime  `bson:"last_activity" json:"last_activity"`
+	CurrentLocalities []int64        `bson:"current_localities" json:"current_localities"`
+	LocalityTableCount int64              `bson:"locality_count" json:"locality_count"`
 }
 
 type JudgedProject struct {
@@ -50,6 +52,8 @@ func NewJudge(name string, email string, notes string) *Judge {
 		Beta:         crowdbt.BETA_PRIOR,
 		SeenProjects: []JudgedProject{},
 		LastActivity: primitive.DateTime(0),
+		CurrentLocalities: []int64{},
+		LocalityCount: 0,
 	}
 }
 

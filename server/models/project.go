@@ -15,6 +15,7 @@ type Project struct {
 	Url           string             `bson:"url" json:"url"`
 	TryLink       string             `bson:"try_link" json:"try_link"`
 	VideoLink     string             `bson:"video_link" json:"video_link"`
+	Locality			int64							 `bson:"locality" json:"locality"`
 	ChallengeList []string           `bson:"challenge_list" json:"challenge_list"`
 	Seen          int64              `bson:"seen" json:"seen"`
 	Votes         int64              `bson:"votes" json:"votes"`
@@ -25,7 +26,7 @@ type Project struct {
 	LastActivity  primitive.DateTime `bson:"last_activity" json:"last_activity"`
 }
 
-func NewProject(name string, location int64, description string, url string, tryLink string, videoLink string, challengeList []string) *Project {
+func NewProject(name string, location int64, description string, url string, tryLink string, videoLink string, locality int64, challengeList []string) *Project {
 	return &Project{
 		Name:          name,
 		Location:      location,
@@ -33,6 +34,7 @@ func NewProject(name string, location int64, description string, url string, try
 		Url:           url,
 		TryLink:       tryLink,
 		VideoLink:     videoLink,
+		Locality:      locality,
 		ChallengeList: challengeList,
 		Seen:          0,
 		Votes:         0,
@@ -45,7 +47,7 @@ func NewProject(name string, location int64, description string, url string, try
 }
 
 func DefaultProject() *Project {
-	return NewProject("", 0, "", "", "", "", []string{})
+	return NewProject("", 0, "", "", "", "", 0, []string{})
 }
 
 // Create custom marshal function to change the format of the primitive.DateTime to a unix timestamp

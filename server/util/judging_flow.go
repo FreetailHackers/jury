@@ -53,10 +53,11 @@ func PickNextProject(db *mongo.Database, judge *models.Judge) (*models.Project, 
 // Find all projects that are higher priority with the following heuristic:
 //  1. Ignore all projects that are inactive
 //  2. Filter out all projects that the judge has skipped or voted on
-//  3. If there are prioritized projects, pick from that list
-//  4. If there are projects not currently being judged, pick from that list
-//  5. If there are projects that have less than MIN_VIEWS, pick from that list
-//  6. Return the remaining list, filtering at steps 2-4 if applicable
+//  3. NEW - Filter projects based on the judges locality
+//  4. If there are prioritized projects, pick from that list
+//  5. If there are projects not currently being judged, pick from that list
+//  6. If there are projects that have less than MIN_VIEWS, pick from that list
+//  7. Return the remaining list, filtering at steps 2-4 if applicable
 func FindPreferredItems(db *mongo.Database, judge *models.Judge) ([]*models.Project, error) {
 	// Get the list of all active projects
 	projects, err := database.FindActiveProjects(db)
@@ -83,6 +84,34 @@ func FindPreferredItems(db *mongo.Database, judge *models.Judge) ([]*models.Proj
 		}
 	}
 	projects = filteredProjects
+
+	// NEW - Filter projects based on the judges locality
+	var localityProjects []*models.Project
+	if judge.LocalityTableCount > LocalityTableMax {
+		judge.LocalityTableCount = 0
+		if len(judge.CurrentLocalities) == len(Localities) {
+			judge.CurrentLocalities = []int64{}
+		}
+		// randomly add a val from Localities into CurrentLocalites but ensure there are no duplicates
+		rand.Seed(time.Now().UnixNano())
+		newLocality := Localities[rand.Intn(len(Localities))]
+		for _, loc := range judge.CurrentLocalities {
+			if loc == newLocality {
+				newLocality = Localities[rand.Intn(len(Localities))]
+			}
+		}
+		judge.CurrentLocalities = append(judge.CurrentLocalities, newLocality)
+	}
+	
+	for _, proj := range projects {
+		if proj.Locality == judge.CurrentLocalities[len(judge.CurrentLocalities)-1] {
+			localityProjects = append(localityProjects, proj)
+			judge.LocalityTableCount++
+		}
+	}
+	if len(localityProjects) > 0 {
+		projects = localityProjects
+	}
 
 	// If there are prioritized projects, pick from that list
 	var prioritizedProjects []*models.Project

@@ -70,6 +70,8 @@ func ParseProjectCsv(content string, hasHeader bool, db *mongo.Database) ([]*mod
 
 	// Read the CSV file, looping through each record
 	var projects []*models.Project
+	var locality int64 = 0
+
 	for {
 		record, err := r.Read()
 		if err == io.EOF {
@@ -79,15 +81,15 @@ func ParseProjectCsv(content string, hasHeader bool, db *mongo.Database) ([]*mod
 			return nil, err
 		}
 
-		// Make sure the record has at least 3 elements (name, description, URL)
-		if len(record) < 3 {
+		// Make sure the record has at least 4 elements (name, description, URL, Locality)
+		if len(record) < 4 {
 			return nil, fmt.Errorf("record contains less than 3 elements: '%s'", strings.Join(record, ","))
 		}
 
 		// Get the challenge list
 		challengeList := []string{}
-		if len(record) > 5 && record[5] != "" {
-			challengeList = strings.Split(record[5], ",")
+		if len(record) > 6 && record[6] != "" {
+			challengeList = strings.Split(record[6], ",")
 		}
 		for i := range challengeList {
 			challengeList[i] = strings.TrimSpace(challengeList[i])
@@ -102,9 +104,17 @@ func ParseProjectCsv(content string, hasHeader bool, db *mongo.Database) ([]*mod
 		if len(record) > 4 && record[4] != "" {
 			videoLink = record[4]
 		}
+		if len(record) > 5 && record[5] != "" {
+			locality = record[5]
+			Localities = append(Localities, locality)
+		}
+
+		if options.NextTableNum < locality {
+			options.NextTableNum = locality
+		}
 
 		// Add judge to slice
-		projects = append(projects, models.NewProject(record[0], options.NextTableNum, record[1], record[2], tryLink, videoLink, challengeList))
+		projects = append(projects, models.NewProject(record[0], options.NextTableNum, record[1], record[2], tryLink, videoLink, locality, challengeList))
 
 		// Increment the table number
 		options.NextTableNum++
