@@ -94,12 +94,17 @@ func FindPreferredItems(db *mongo.Database, judge *models.Judge) ([]*models.Proj
 		}
 		// randomly add a val from Localities into CurrentLocalites but ensure there are no duplicates
 		rand.Seed(time.Now().UnixNano())
-		newLocality := Localities[rand.Intn(len(Localities))]
-		for _, loc := range judge.CurrentLocalities {
-			if loc == newLocality {
-				newLocality = Localities[rand.Intn(len(Localities))]
+		unvisitedLocalities := []int64{}
+		for _, loc := range Localities {
+			for _, visitedLoc := range judge.CurrentLocalities {
+				if loc != visitedLoc {
+					unvisitedLocalities = append(unvisitedLocalities, loc)
+				}
 			}
 		}
+		fmt.Println(Localities)
+		fmt.Println(unvisitedLocalities)
+		newLocality := unvisitedLocalities[rand.Intn(len(unvisitedLocalities))]
 		judge.CurrentLocalities = append(judge.CurrentLocalities, newLocality)
 	}
 	
