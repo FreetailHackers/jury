@@ -63,6 +63,7 @@ type AddProjectRequest struct {
 	Url           string `json:"url"`
 	TryLink       string `json:"tryLink"`
 	VideoLink     string `json:"videoLink"`
+	Locality      string `json:"locality"`
 	ChallengeList string `json:"challengeList"`
 }
 
