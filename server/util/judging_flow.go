@@ -87,7 +87,7 @@ func FindPreferredItems(db *mongo.Database, judge *models.Judge) ([]*models.Proj
 
 	// NEW - Filter projects based on the judges locality
 	var localityProjects []*models.Project
-	if judge.LocalityTableCount > LocalityTableMax {
+	if judge.LocalityTableCount > LocalityTableMax || len(judge.seen_projects) == 0 {
 		judge.LocalityTableCount = 0
 		if len(judge.CurrentLocalities) == len(Localities) {
 			judge.CurrentLocalities = []int64{}
