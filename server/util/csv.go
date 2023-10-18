@@ -106,7 +106,10 @@ func ParseProjectCsv(content string, hasHeader bool, db *mongo.Database) ([]*mod
 			videoLink = record[4]
 		}
 		if len(record) > 5 && record[5] != "" {
-			locality = record[5]
+			locality, err = strconv.ParseInt(record[5], 10, 64)
+			if err != nil {
+				return nil, err
+			}
 			Localities = append(Localities, locality)
 		}
 
@@ -166,6 +169,8 @@ func ParseDevpostCSV(content string, db *mongo.Database) ([]*models.Project, err
 
 	// Read the CSV file, looping through each record
 	var projects []*models.Project
+	var locality int64 = 0
+
 	for {
 		record, err := r.Read()
 		if err == io.EOF {
@@ -196,7 +201,10 @@ func ParseDevpostCSV(content string, db *mongo.Database) ([]*models.Project, err
 
 		// Locality Field
 		if len(record) > 9 && record[9] != "" {
-			locality = record[9]
+			locality, err = strconv.ParseInt(record[9], 10, 64)
+			if err != nil {
+				return nil, err
+			}
 			Localities = append(Localities, locality)
 		}
 
