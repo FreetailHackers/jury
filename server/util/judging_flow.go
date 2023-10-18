@@ -7,6 +7,7 @@ import (
 	"server/models"
 	"time"
 	"fmt"
+	"slice"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -98,7 +99,7 @@ func FindPreferredItems(db *mongo.Database, judge *models.Judge) ([]*models.Proj
 		unvisitedLocalities := []int64{}
 		
 		for _, loc := range Localities {
-			if !contains(judge.CurrentLocalities, loc) {
+			if !slice.Contains(judge.CurrentLocalities, loc) {
 				unvisitedLocalities = append(unvisitedLocalities, loc)
 			}
 		}
