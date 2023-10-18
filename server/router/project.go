@@ -101,8 +101,17 @@ func AddProject(ctx *gin.Context) {
 		challengeList[i] = strings.TrimSpace(challengeList[i])
 	}
 
+	locality := int64(0)
+	if projectReq.Locality != "" {
+		locality, err := strconv.ParseInt(projectReq.Locality, 10, 64)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": "error parsing locality: " + err.Error()})
+			return
+		}
+	}
+
 	// Create the project
-	project := models.NewProject(projectReq.Name, options.NextTableNum, projectReq.Description, projectReq.Url, projectReq.TryLink, projectReq.VideoLink, challengeList)
+	project := models.NewProject(projectReq.Name, options.NextTableNum, projectReq.Description, projectReq.Url, projectReq.TryLink, projectReq.VideoLink, locality, challengeList)
 
 	// Insert project and update the next table num field in options
 	err = database.WithTransaction(db, func(ctx mongo.SessionContext) (interface{}, error) {
