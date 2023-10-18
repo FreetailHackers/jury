@@ -115,9 +115,11 @@ func FindPreferredItems(db *mongo.Database, judge *models.Judge) ([]*models.Proj
 		fmt.Println(unvisitedLocalities)
 		newLocality := unvisitedLocalities[rand.Intn(len(unvisitedLocalities))]
 		judge.CurrentLocalities = append(judge.CurrentLocalities, newLocality)
+		fmt.Println(judge.CurrentLocalites)
 	}
 	
 	for _, proj := range projects {
+		fmt.Println("Choosing projects...", judge.CurrentLocalites)
 		if proj.Locality == judge.CurrentLocalities[len(judge.CurrentLocalities)-1] {
 			localityProjects = append(localityProjects, proj)
 			judge.LocalityTableCount++
