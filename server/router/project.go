@@ -104,7 +104,7 @@ func AddProject(ctx *gin.Context) {
 
 	locality := int64(0)
 	if projectReq.Locality != "" {
-		locality, err := strconv.ParseInt(projectReq.Locality, 10, 64)
+		locality, err = strconv.ParseInt(projectReq.Locality, 10, 64)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": "error parsing locality: " + err.Error()})
 			return
