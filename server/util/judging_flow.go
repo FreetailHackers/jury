@@ -97,12 +97,12 @@ func FindPreferredItems(db *mongo.Database, judge *models.Judge) ([]*models.Proj
 
 	// NEW - Filter projects based on the judges locality
 	var localityProjects []*models.Project
-	if judge.LocalityTableCount > LocalityTableMax || len(judge.SeenProjects) == 0 {
+	if judge.LocalityTableCount > LocalityTableMax || len(judge.CurrentLocalities) == 0 {
 		judge.LocalityTableCount = 0
 		if len(judge.CurrentLocalities) == len(Localities) {
 			judge.CurrentLocalities = []int64{}
 		}
-		// randomly add a val from Localities into CurrentLocalites but ensure there are no duplicates
+		// randomly add a val from Localities into CurrentLocalities but ensure there are no duplicates
 		rand.Seed(time.Now().UnixNano())
 		unvisitedLocalities := []int64{}
 		
