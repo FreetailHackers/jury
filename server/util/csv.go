@@ -1,6 +1,7 @@
 package util
 
 import (
+	"context"
 	"encoding/csv"
 	"fmt"
 	"io"
@@ -121,7 +122,7 @@ func ParseProjectCsv(content string, hasHeader bool, db *mongo.Database) ([]*mod
 	}
 
 	// Update the options table number in the database
-	err = database.UpdateNextTableNum(db, options.NextTableNum)
+	err = database.UpdateNextTableNum(db, context.Background(), options.NextTableNum)
 	if err != nil {
 		return nil, err
 	}
@@ -209,7 +210,7 @@ func ParseDevpostCSV(content string, db *mongo.Database) ([]*models.Project, err
 	}
 
 	// Update the options table number in the database
-	err = database.UpdateNextTableNum(db, options.NextTableNum)
+	err = database.UpdateNextTableNum(db, context.Background(), options.NextTableNum)
 	if err != nil {
 		return nil, err
 	}
