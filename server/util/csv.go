@@ -186,13 +186,24 @@ func ParseDevpostCSV(content string, db *mongo.Database) ([]*models.Project, err
 		}
 
 		// Split challenge list into a slice and trim them
-		challengeList := strings.Split(record[9], ",")
-		if record[9] == "" {
+		challengeList := strings.Split(record[10], ",")
+		if record[10] == "" {
 			challengeList = []string{}
 		}
 		for i := range challengeList {
 			challengeList[i] = strings.TrimSpace(challengeList[i])
 		}
+
+		// Locality Field
+		if len(record) > 9 && record[9] != "" {
+			locality = record[9]
+			Localities = append(Localities, locality)
+		}
+
+		if options.NextTableNum < locality {
+			options.NextTableNum = locality
+		}
+
 
 		// Add project to slice
 		projects = append(projects, models.NewProject(
@@ -202,6 +213,7 @@ func ParseDevpostCSV(content string, db *mongo.Database) ([]*models.Project, err
 			record[1],
 			record[7],
 			record[8],
+			locality,
 			challengeList,
 		))
 
