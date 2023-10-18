@@ -7,7 +7,6 @@ import (
 	"server/models"
 	"time"
 	"fmt"
-	"slice"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -49,6 +48,15 @@ func PickNextProject(db *mongo.Database, judge *models.Judge) (*models.Project, 
 
 	// Pick the project with the highest expected information gain
 	return maxInfoGain(items, prevProject, judge), nil
+}
+
+func contains(arr []int64, target int64) bool {
+	for _, element := range arr {
+		if element == target {
+				return true
+		}
+	}
+	return false
 }
 
 // FindPreferredItems - List of projects to pick from for the judge.
@@ -99,7 +107,7 @@ func FindPreferredItems(db *mongo.Database, judge *models.Judge) ([]*models.Proj
 		unvisitedLocalities := []int64{}
 		
 		for _, loc := range Localities {
-			if !slice.Contains(judge.CurrentLocalities, loc) {
+			if !contains(judge.CurrentLocalities, loc) {
 				unvisitedLocalities = append(unvisitedLocalities, loc)
 			}
 		}
