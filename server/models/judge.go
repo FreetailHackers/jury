@@ -53,7 +53,7 @@ func NewJudge(name string, email string, notes string) *Judge {
 		SeenProjects: []JudgedProject{},
 		LastActivity: primitive.DateTime(0),
 		CurrentLocalities: []int64{},
-		LocalityCount: 0,
+		LocalityTableCount: 0,
 	}
 }
 
