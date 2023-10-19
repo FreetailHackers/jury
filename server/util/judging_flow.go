@@ -132,7 +132,7 @@ func FindPreferredItems(db *mongo.Database, judge *models.Judge) ([]*models.Proj
 				return nil, err
 			}
 		}
-		fmt.Println("Updated Judge Table Count: ", judge.LocalityTableCount, " and CurrentLocalities:" judge.CurrentLocalities)
+		fmt.Println("Updated Judge Table Count: ", judge.LocalityTableCount, " and CurrentLocalities:", judge.CurrentLocalities)
 	}
 	if len(localityProjects) > 0 {
 		projects = localityProjects
