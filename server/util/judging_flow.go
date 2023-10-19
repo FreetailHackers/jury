@@ -6,7 +6,6 @@ import (
 	"server/database"
 	"server/models"
 	"time"
-	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
