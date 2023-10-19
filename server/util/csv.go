@@ -170,7 +170,7 @@ func ParseDevpostCSV(content string, db *mongo.Database) ([]*models.Project, err
 	// Read the CSV file, looping through each record
 	var projects []*models.Project
 	var locality int64 = 0
-	var dupeLocal := make(map[int64]bool) 
+	var dupeLocal = make(map[int64]bool) 
 	for {
 		record, err := r.Read()
 		if err == io.EOF {
