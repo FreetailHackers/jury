@@ -115,6 +115,10 @@ func FindPreferredItems(db *mongo.Database, judge *models.Judge) ([]*models.Proj
 		fmt.Println(unvisitedLocalities)
 		newLocality := unvisitedLocalities[rand.Intn(len(unvisitedLocalities))]
 		judge.CurrentLocalities = append(judge.CurrentLocalities, newLocality)
+		err = database.UpdateJudge(db, judge)
+		if err != nil {
+			return nil, err
+		}
 		fmt.Println(judge.CurrentLocalities)
 	}
 	
