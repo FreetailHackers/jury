@@ -6,6 +6,7 @@ import (
 	"server/database"
 	"server/models"
 	"time"
+	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -110,6 +111,7 @@ func FindPreferredItems(db *mongo.Database, judge *models.Judge) ([]*models.Proj
 				unvisitedLocalities = append(unvisitedLocalities, loc)
 			}
 		}
+		fmt.Println("unvisitedLocalities: ", unvisitedLocalities)
 		newLocality := unvisitedLocalities[rand.Intn(len(unvisitedLocalities))]
 		judge.CurrentLocalities = append(judge.CurrentLocalities, newLocality)
 		err = database.UpdateJudge(db, judge)
