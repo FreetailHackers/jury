@@ -97,7 +97,7 @@ func FindPreferredItems(db *mongo.Database, judge *models.Judge) ([]*models.Proj
 
 	// NEW - Filter projects based on the judges locality
 	var localityProjects []*models.Project
-	fmt.Println("Starting Localities: ", judge.CurrentLocalities)
+	fmt.Println("Starting Localities: ", judge.CurrentLocalities, " localityCount: ", judge.LocalityTableCount, " LocalityTableMax: ", LocalityTableMax)
 	if judge.LocalityTableCount > LocalityTableMax || len(judge.CurrentLocalities) == 0 {
 		judge.LocalityTableCount = 0
 		if len(judge.CurrentLocalities) == len(Localities) {
@@ -127,7 +127,12 @@ func FindPreferredItems(db *mongo.Database, judge *models.Judge) ([]*models.Proj
 		if proj.Locality == judge.CurrentLocalities[len(judge.CurrentLocalities)-1] {
 			localityProjects = append(localityProjects, proj)
 			judge.LocalityTableCount++
+			err = database.UpdateJudge(db, judge)
+			if err != nil {
+				return nil, err
+			}
 		}
+		fmt.Println("Updated Judge Table Count: ", judge.LocalityTableCount, " and CurrentLocalities:" judge.CurrentLocalities)
 	}
 	if len(localityProjects) > 0 {
 		projects = localityProjects
